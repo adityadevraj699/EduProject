@@ -36,3 +36,50 @@ export const logoutApi = async () => {
 };
 
 
+/* ---------- FORGOT PASSWORD (Send OTP) ---------- */
+export const forgotPasswordApi = async (email) => {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to send OTP");
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+/* ---------- VERIFY OTP ---------- */
+export const verifyOtpApi = async (email, otp) => {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Invalid OTP");
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+/* ---------- CHANGE PASSWORD ---------- */
+export const changePasswordApi = async (email, newPassword) => {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/change-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, newPassword }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to update password");
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};

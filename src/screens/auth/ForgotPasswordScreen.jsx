@@ -14,6 +14,7 @@ import {
   Modal
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { forgotPasswordApi } from "../../services/api";
 
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   const handleForgotPassword = async () => {
     const formattedEmail = email.trim().toLowerCase();
-    navigation.navigate("VerifyOtp", { email: formattedEmail });
+    //navigation.navigate("VerifyOtp", { email: formattedEmail });
 
     // Domain Validation
     if (!formattedEmail.endsWith("@mitmeerut.ac.in")) {
@@ -42,18 +43,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       setLoading(true);
       
       // Backend API Call for OTP
-      const response = await fetch("https://your-api.com/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formattedEmail }),
-      });
-
-      const data = await response.json();
-      
-
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong.");
-      }
+      await forgotPasswordApi(formattedEmail);
 
       // Success Scenario
       triggerAlert("OTP Sent", "A verification code has been sent to your college email.", "success");

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { useAuth } from "../../context/AuthContext";
-import { logoutApi } from "../../services/api";
+import { useAuth } from "../../../context/AuthContext";
+import { logoutApi } from "../../../services/api";
 
 export default function ProfileScreen() {
   const { logout } = useAuth();
@@ -17,7 +17,7 @@ const handleLogout = async () => {
 
   return (
     <View className="items-center justify-center flex-1 bg-white">
-      <Text className="mb-6 text-xl">ProfileScreen</Text>
+      <Text className="mb-6 text-xl"> Guide ProfileScreen</Text>
 
       <TouchableOpacity
         onPress={handleLogout}

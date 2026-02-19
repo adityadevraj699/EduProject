@@ -18,17 +18,28 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     const loadUser = async () => {
-      const token = await AsyncStorage.getItem("token");
-      if (token) setUser({ token });
-      setLoading(false);
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const userData = await AsyncStorage.getItem("user"); // 👈 User data bhi load karein
+        
+        if (token && userData) {
+          setUser({ ...JSON.parse(userData), token });
+        }
+      } catch (err) {
+        console.log("Error loading storage", err);
+      } finally {
+        setLoading(false);
+      }
     };
     loadUser();
   }, []);
 
+
  const login = async (data) => {
   await AsyncStorage.setItem("token", data.token);
+  await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
   setUser({
     ...data.user,

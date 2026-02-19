@@ -6,22 +6,46 @@ import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
 import './global.css'
 
-/* ---------- ROOT NAV ---------- */
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const RootStack = createNativeStackNavigator();
+
+
 function RootNavigator() {
   const { user, loading } = useAuth();
 
-  /* ⭐ WAIT until AsyncStorage check finish */
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F5F1E6" }}>
+        <ActivityIndicator size="large" color="#E2B35E" />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      {user ? <MainTabs /> : <AuthStack />}
+      <RootStack.Navigator
+        screenOptions={{
+          headerShown: false,
+          // 💡 Yahan professional animation set karein
+          animation: "fade", 
+          animationDuration: 600,
+        }}
+      >
+        {user ? (
+          // Jab user login hoga
+          <RootStack.Screen name="MainTabs" component={MainTabs} />
+        ) : (
+          // Jab user logged out hoga
+          <RootStack.Screen 
+            name="AuthStack" 
+            component={AuthStack} 
+            options={{
+              animationTypeForReplace: 'pop', // Logout pe piche jane wala effect
+            }}
+          />
+        )}
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }

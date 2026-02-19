@@ -14,6 +14,7 @@ import {
   Modal
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { changePasswordApi } from "../../services/api";
 
 export default function ChangePasswordScreen({ navigation, route }) {
   const [password, setPassword] = useState("");
@@ -21,6 +22,9 @@ export default function ChangePasswordScreen({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const userEmail = route.params?.email;
+
 
   // Custom Modal State
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,26 +52,27 @@ export default function ChangePasswordScreen({ navigation, route }) {
       return;
     }
 
-    try {
-      setLoading(true);
-      
-      // Backend Call (Assuming you have this endpoint)
-      // const response = await fetch("https://your-api.com/auth/reset-password", { ... });
+try {
+        setLoading(true);
+        
+        // 2. Real API Call
+        // await yahan wait karega response ka, loading spinner chalta rahega
+        const response = await changePasswordApi(userEmail, password);
 
-      // Simulating Success for Design
-      setTimeout(() => {
-        setLoading(false);
+        // 3. Agar success hua (catch mein nahi gaya)
+        setLoading(false); 
         triggerAlert("Success", "Your password has been reset successfully!", "success");
         
+        // Sirf navigation ke liye ek chota delay taaki user success message padh sake
         setTimeout(() => {
-          setModalVisible(false);
-          navigation.replace("Login");
+            setModalVisible(false);
+            navigation.replace("Login");
         }, 2000);
-      }, 1500);
 
     } catch (err) {
-      setLoading(false);
-      triggerAlert("Error", err.message, "error");
+        // 4. Error Handling
+        setLoading(false);
+        triggerAlert("Error", err.message || "Something went wrong", "error");
     }
   };
 

@@ -14,6 +14,7 @@ import {
   Modal
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { verifyOtpApi } from "../../services/api";
 
 export default function VerifyOtpScreen({ navigation, route }) {
   // Navigation se email get karein (optional)
@@ -65,15 +66,7 @@ export default function VerifyOtpScreen({ navigation, route }) {
       
       
       // Backend Call
-      const response = await fetch("https://your-api.com/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userEmail, otp: otpValue }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.message || "Invalid OTP");
+     await verifyOtpApi(userEmail, otpValue);
 
       triggerAlert("Verified", "OTP verified successfully!", "success");
       
