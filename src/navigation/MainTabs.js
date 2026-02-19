@@ -21,8 +21,8 @@ export default function MainTabs() {
         tabBarStyle: {
           backgroundColor: "#FFFFFF",
           borderTopColor: "#E5E7EB",
-          height: 60,
-          paddingBottom: Platform.OS === "ios" ? 10 : 6,
+          height: 80,
+          paddingBottom: Platform.OS === "ios" ? 15 : 10,
           paddingTop: 6
         },
 

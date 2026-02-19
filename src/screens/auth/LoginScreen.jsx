@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
 import {
   View,
   Text,
@@ -15,12 +17,16 @@ import {
   Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Expo users ke liye default hai
+import { loginApi } from "../../services/api";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+
+  const { login } = useContext(AuthContext);
 
   // Custom Modal States
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,13 +43,13 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     const formattedEmail = email.trim().toLowerCase();
-    navigation.replace("MainTabs");
+    //navigation.replace("MainTabs");
 
     // 1. Domain Check (@mitmeerut.ac.in)
-    if (!formattedEmail.endsWith("@mitmeerut.ac.in")) {
-      triggerAlert("Invalid Domain", "Please use your official college email (@mitmeerut.ac.in).", "error");
-      return;
-    }
+    // if (!formattedEmail.endsWith("@mitmeerut.ac.in")) {
+    //   triggerAlert("Invalid Domain", "Please use your official college email (@mitmeerut.ac.in).", "error");
+    //   return;
+    // }
 
     if (password.length < 6) {
       triggerAlert("Security Issue", "Password must be at least 6 characters.", "error");
@@ -53,21 +59,18 @@ export default function LoginScreen({ navigation }) {
     try {
       setLoading(true);
       
-      const response = await fetch("https://your-api.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formattedEmail, password }),
-      });
+          const data = await loginApi(email, password);
 
-      const data = await response.json();
+          console.log("LOGIN RESPONSE", data);
 
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed. Check your credentials.");
-      }
+    // token store
+         await login(data);
+         await AsyncStorage.setItem("token", data.token);
+        
 
       // 2. Success Scenario
-      triggerAlert("Welcome!", "Login Successful. Redirecting...", "success");
-      //navigation.replace("MainTabs");
+      //triggerAlert("Welcome!", "Login Successful. Redirecting...", "success");
+      navigation.replace("MainTabs");
 
     } catch (err) {
       triggerAlert("Login Failed", err.message, "error");

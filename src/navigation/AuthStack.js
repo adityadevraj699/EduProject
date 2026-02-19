@@ -8,7 +8,7 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import VerifyOtpScreen from "../screens/auth/VerifyOtpScreen";
 import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 
-import MainTabs from "./MainTabs";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -38,8 +38,6 @@ export default function AuthStack() {
         component={ChangePasswordScreen}
       />
 
-       {/* IMPORTANT */}
-      <Stack.Screen name="MainTabs" component={MainTabs} />
     </Stack.Navigator>
   );
 }
