@@ -43,6 +43,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     const formattedEmail = email.trim().toLowerCase();
+    console.info("login aaya hai....f")
     //navigation.replace("MainTabs");
 
     // 1. Domain Check (@mitmeerut.ac.in)

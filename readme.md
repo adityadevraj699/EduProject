@@ -43,9 +43,4 @@ eas build -p android --profile preview
 
 
 
-CREATE TABLE password_otps (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255),
-  otp_hash VARCHAR(255),
-  expires_at BIGINT
-);
+

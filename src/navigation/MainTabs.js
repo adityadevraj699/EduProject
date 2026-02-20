@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext"; // 👈 Hook import karein
 
 // --- GUIDE SCREENS ---
 import HomeScreen from "../screens/guide/home/HomeScreen";
-import TeamListScreen from "../screens/guide/team/TeamListScreen";
+import TeamStack from "./guide/team/TeamStack";
 import MeetingScreen from "../screens/guide/meeting/MeetingScreen";
 import ProfileScreen from "../screens/guide/profile/ProfileScreen";
 
@@ -57,7 +57,7 @@ export default function MainTabs() {
       {role === "GUIDE" ? (
         <>
           <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Team" component={TeamListScreen} />
+          <Tab.Screen name="Team" component={TeamStack} />
           <Tab.Screen name="Meeting" component={MeetingScreen} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
         </>
@@ -72,3 +72,4 @@ export default function MainTabs() {
     </Tab.Navigator>
   );
 }
+
