@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.89.216:5000/api/v1";
+const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1";
 
 /* ---------- LOGIN API ---------- */
 export const loginApi = async (email, password) => {
