@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext"; // 👈 Hook import karein
 // --- GUIDE SCREENS ---
 import HomeScreen from "../screens/guide/home/HomeScreen";
 import TeamStack from "./guide/team/TeamStack";
-import MeetingScreen from "../screens/guide/meeting/MeetingScreen";
+import MeetingStack from "./guide/meeting/MeetingStack";
 import ProfileScreen from "../screens/guide/profile/ProfileScreen";
 
 // --- STUDENT SCREENS (Inhe create kar lena agar nahi kiye hain) ---
@@ -58,7 +58,7 @@ export default function MainTabs() {
         <>
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Team" component={TeamStack} />
-          <Tab.Screen name="Meeting" component={MeetingScreen} />
+          <Tab.Screen name="Meeting" component={MeetingStack} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
         </>
       ) : (
