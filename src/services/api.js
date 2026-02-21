@@ -1,9 +1,9 @@
-const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1"; 
-//const BASE_URL = "http://192.168.88.75:5000/api/v1";
+//const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1"; 
+const BASE_URL = "http://192.168.88.75:5000/api/v1";
 
 /* ---------- LOGIN API ---------- */
 export const loginApi = async (email, password) => {
-  console.info("api call fronted me hua hai .....")
+
   try {
     const res = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
@@ -30,7 +30,6 @@ export const loginApi = async (email, password) => {
 export const logoutApi = async () => {
   try {
     await AsyncStorage.removeItem("token");
-    console.log("api remove")
     return true;
   } catch (err) {
     throw err;
@@ -128,7 +127,7 @@ export const getTeamDetailsApi = async (token, teamId) => {
 
     return await res.json();
   } catch (err) {
-    console.error("API Call Error:", err.message);
+   
     throw err;
   }
 };

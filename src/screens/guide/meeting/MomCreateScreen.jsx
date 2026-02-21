@@ -36,7 +36,6 @@ export default function CreateMomScreen() {
       setLoading(true);
       const response = await getMeetingAndMembersApi(user.token, meetingId);
       
-      console.log("Full Data from API:", response.data);
 
       if (response.success && response.data) {
         const serverData = response.data;
@@ -63,7 +62,7 @@ export default function CreateMomScreen() {
         }
       }
     } catch (err) {
-      console.error("Fetch Data Error:", err.message);
+     
       Alert.alert("Error", "Could not load meeting details.");
     } finally {
       setLoading(false);
@@ -96,7 +95,7 @@ export default function CreateMomScreen() {
         }))
       };
 
-      console.log("backed data : " ,user.token, meetingId,payload)
+      
 
       const res = await createMomApi(user.token, meetingId, payload);
       
@@ -105,7 +104,6 @@ export default function CreateMomScreen() {
         navigation.goBack(); 
       }
     } catch (err) {
-      console.error("Submit Error:", err.message);
       Alert.alert("Submission Failed", err.message);
     } finally {
       setSubmitting(false);

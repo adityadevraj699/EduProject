@@ -1,6 +1,6 @@
-// const BASE_URL = "http://192.168.88.75:5000/api/v1";
+const BASE_URL = "http://192.168.88.75:5000/api/v1";
 
-const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1"; 
+// const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1"; 
 
 /**
  * Guide ki saari meetings fetch karne ke liye
@@ -25,7 +25,6 @@ export const getAllMeetingsByGuideApi = async (token) => {
 
     return result; 
   } catch (err) {
-    console.error("Fetch Meetings Error:", err.message);
     throw err;
   }
 };
@@ -67,7 +66,6 @@ export const getMeetingAndMembersApi = async (token, meetingId) => {
         "Content-Type": "application/json",
       }
     });
-    console.log(res)
     const result = await res.json();
     if (!res.ok) throw new Error(result.message || "Failed to fetch data");
     return result;
@@ -95,7 +93,6 @@ export const createMomApi = async (token, meetingId, payload) => {
     if (!res.ok) throw new Error(result.message || "Failed to save MOM");
     return result;
   } catch (err) {
-    console.error("Create MOM Error:", err.message);
     throw err;
   }
 };
@@ -104,9 +101,6 @@ export const createMomApi = async (token, meetingId, payload) => {
 export const createMeetingApi = async (token, payload) => {
   try {
     const url = `${BASE_URL}/meetings/create`;
-
-    console.log("🚀 CREATE MEETING URL:", url);
-    console.log("📦 PAYLOAD:", payload);
 
     const res = await fetch(url, {
       method: "POST",
@@ -120,8 +114,6 @@ export const createMeetingApi = async (token, payload) => {
 
     const text = await res.text();   // ⭐ FIRST TEXT
 
-    console.log("📥 RAW RESPONSE STATUS:", res.status);
-    console.log("📥 RAW RESPONSE BODY:", text);
 
     let result;
     try {
@@ -137,7 +129,6 @@ export const createMeetingApi = async (token, payload) => {
     return result;
 
   } catch (err) {
-    console.error("❌ Create Meeting Error:", err.message);
     throw err;
   }
 };
