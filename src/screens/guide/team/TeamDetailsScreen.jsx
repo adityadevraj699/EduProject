@@ -171,9 +171,29 @@ export default function TeamDetailsScreen({ route, navigation }) {
               </View>
               <Text className="text-[#6B6B6B] text-[10px]">{member.roll_number} • {member.branch_name}</Text>
             </View>
-            <TouchableOpacity onPress={() => Linking.openURL(`tel:${member.contact_no}`)} className="items-center justify-center w-10 h-10 bg-green-500 rounded-full">
-              <Ionicons name="call" size={18} color="white" />
-            </TouchableOpacity>
+           <View style={{ flexDirection: "row" }}>
+  
+  {/* CALL */}
+  <TouchableOpacity
+    onPress={() => Linking.openURL(`tel:${member.contact_no}`)}
+    className="items-center justify-center w-10 h-10 mr-2 bg-green-500 rounded-full"
+  >
+    <Ionicons name="call" size={18} color="white" />
+  </TouchableOpacity>
+
+  {/* EMAIL → PUBLIC PROFILE */}
+  <TouchableOpacity
+    onPress={() =>
+      navigation.navigate("PublicProfile", {
+        email: member.student_email   // ⭐ IMPORTANT
+      })
+    }
+    className="items-center justify-center w-10 h-10 bg-[#1A1A1A] rounded-full"
+  >
+    <Ionicons name="person" size={18} color="#E2B35E" />
+  </TouchableOpacity>
+
+</View>
           </View>
         ))}
 

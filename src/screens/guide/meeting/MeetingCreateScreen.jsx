@@ -8,8 +8,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from '../../../context/AuthContext';
-import { getGuideTeamsApi } from '../../../services/api'; // Path sahi kar lena
+import { getGuideTeamsApi } from '../../../services/api'; 
 import { createMeetingApi } from '../../../services/meetingApi';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function MeetingCreateScreen() {
   const navigation = useNavigation();
@@ -25,9 +26,13 @@ export default function MeetingCreateScreen() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [title, setTitle] = useState('');
   const [agenda, setAgenda] = useState('');
-  const [mode, setMode] = useState('OFFLINE'); // Default
+  const [mode, setMode] = useState('OFFLINE'); 
   const [location, setLocation] = useState('');
-  const [dateTime, setDateTime] = useState(new Date().toISOString()); // Logic simplified
+  
+  // Date & Time Logic States
+  const [dateTime, setDateTime] = useState(new Date());
+  const [pickerMode, setPickerMode] = useState('date'); // 'date' or 'time'
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -51,6 +56,41 @@ export default function MeetingCreateScreen() {
     }
   };
 
+  // Logic to handle Date then Time
+  const onChangeDateTime = (event, selectedValue) => {
+    // Android dismiss handling
+    if (event.type === 'dismissed') {
+      setShowPicker(false);
+      return;
+    }
+
+    const currentDate = selectedValue || dateTime;
+    
+    if (Platform.OS === 'android') {
+      if (pickerMode === 'date') {
+        // Date select hone ke baad, picker close karo aur Time picker open karo
+        setDateTime(currentDate);
+        setPickerMode('time');
+        // Small timeout ensures the date picker is fully closed before time picker opens
+        setTimeout(() => setShowPicker(true), 100);
+      } else {
+        // Time select hone ke baad final save
+        setDateTime(currentDate);
+        setShowPicker(false);
+        setPickerMode('date'); // Reset back to date for next click
+      }
+    } else {
+      // iOS handles 'datetime' mode naturally
+      setDateTime(currentDate);
+      setShowPicker(false);
+    }
+  };
+
+  const showDateTimePicker = () => {
+    setPickerMode('date');
+    setShowPicker(true);
+  };
+
   const handleCreate = async () => {
     if (!selectedTeam || !title.trim() || !mode) {
       return Alert.alert("Required fields", "Please fill Team, Title and Mode.");
@@ -62,10 +102,11 @@ export default function MeetingCreateScreen() {
         team_id: selectedTeam,
         title: title.trim(),
         agenda: agenda.trim(),
-        meeting_date_time: dateTime,
+        meeting_date_time: dateTime.toISOString(), // Sent as TIMESTAMP to Supabase
         mode: mode,
         location: location.trim(),
-        duration_minutes: 60, // Default 1 hour
+        duration_minutes: 30,
+        status: 'SCHEDULED'
       };
 
       const res = await createMeetingApi(user.token, payload);
@@ -74,7 +115,7 @@ export default function MeetingCreateScreen() {
         navigation.goBack();
       }
     } catch (err) {
-      Alert.alert("Failed", err.message);
+      Alert.alert("Failed", err.message || "An error occurred");
     } finally {
       setSubmitting(false);
     }
@@ -151,6 +192,34 @@ export default function MeetingCreateScreen() {
             </View>
           </View>
 
+          {/* DATE & TIME - Fixed Section */}
+          <View className="mt-6">
+            <Text className="text-[#1A1A1A] font-bold mb-2 ml-1">Date & Time</Text>
+            <TouchableOpacity
+              onPress={showDateTimePicker}
+              className="bg-white p-4 rounded-2xl border border-[#E5E5E5] flex-row items-center"
+            >
+              <Ionicons name="calendar-outline" size={20} color="#E2B35E" style={{marginRight: 10}} />
+              <Text className="text-[#1A1A1A] font-medium">
+                {dateTime.toLocaleString('en-IN', { 
+                  day: '2-digit', month: 'short', year: 'numeric', 
+                  hour: '2-digit', minute: '2-digit', hour12: true 
+                })}
+              </Text>
+            </TouchableOpacity>
+
+            {showPicker && (
+              <DateTimePicker
+                value={dateTime}
+                mode={Platform.OS === 'ios' ? 'datetime' : pickerMode}
+                is24Hour={false}
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onChangeDateTime}
+                minimumDate={new Date()}
+              />
+            )}
+          </View>
+
           {/* AGENDA */}
           <View className="mt-6">
             <Text className="text-[#1A1A1A] font-bold mb-2 ml-1">Agenda (Optional)</Text>
@@ -171,7 +240,7 @@ export default function MeetingCreateScreen() {
             onPress={handleCreate}
             disabled={submitting}
             activeOpacity={0.8}
-            className={`mt-10 bg-[#E2B35E] p-5 rounded-3xl items-center shadow-lg ${submitting ? 'opacity-50' : ''}`}
+            className={`mt-10 mb-10 bg-[#E2B35E] p-5 rounded-3xl items-center shadow-lg ${submitting ? 'opacity-50' : ''}`}
           >
             {submitting ? (
               <ActivityIndicator color="white" />

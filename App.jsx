@@ -1,22 +1,26 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import AuthStack from "./src/navigation/AuthStack";
-import MainTabs from "./src/navigation/MainTabs";
-import { AuthProvider, useAuth } from "./src/context/AuthContext";
-import { View, ActivityIndicator } from "react-native";
-import './global.css'
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SafeAreaProvider } from "react-native-safe-area-context"; // 👈 Add this
+import { View, ActivityIndicator, StatusBar } from "react-native";
+
+// Context aur Navigation imports
+import { AuthProvider, useAuth } from "./src/context/AuthContext";
+import AuthStack from "./src/navigation/AuthStack";
+import MainTabsStack from "./src/navigation/MainTabsStack";
+
+import './global.css';
 
 const RootStack = createNativeStackNavigator();
-
 
 function RootNavigator() {
   const { user, loading } = useAuth();
 
+  // Loading Screen
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F5F1E6" }}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F5F1E6" />
         <ActivityIndicator size="large" color="#E2B35E" />
       </View>
     );
@@ -27,21 +31,23 @@ function RootNavigator() {
       <RootStack.Navigator
         screenOptions={{
           headerShown: false,
-          // 💡 Yahan professional animation set karein
-          animation: "fade", 
-          animationDuration: 600,
+          animation: "fade_from_bottom", // 💡 Professional transition
+          animationDuration: 400,
         }}
       >
         {user ? (
-          // Jab user login hoga
-          <RootStack.Screen name="MainTabs" component={MainTabs} />
+          // Authenticated Routes
+          <RootStack.Screen 
+            name="MainTabs" 
+            component={MainTabsStack} 
+          />
         ) : (
-          // Jab user logged out hoga
+          // Unauthenticated Routes
           <RootStack.Screen 
             name="AuthStack" 
             component={AuthStack} 
             options={{
-              animationTypeForReplace: 'pop', // Logout pe piche jane wala effect
+              animationTypeForReplace: 'pop',
             }}
           />
         )}
@@ -52,8 +58,12 @@ function RootNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    // 1. SafeAreaProvider zaroori hai useSafeAreaInsets() ke liye
+    <SafeAreaProvider> 
+      {/* 2. AuthProvider ko navigation ke upar rakhein taaki useAuth har jagah chale */}
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

@@ -1,6 +1,4 @@
-//const BASE_URL = "http://192.168.88.75:5000/api/v1";
-
-const BASE_URL = "https://eduprojectapplication.vercel.app/api/v1"; 
+import { BASE_URL } from './apiConfig';
 
 /**
  * Guide ki saari meetings fetch karne ke liye
