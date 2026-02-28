@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TextInput,
-  TouchableOpacity
+  View, Text, ScrollView, ActivityIndicator, TextInput, 
+  TouchableOpacity, Dimensions, StatusBar, Linking 
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome5, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getStudentPublicProfileApi } from "../../../services/publicProfileApi";
 
+const { width } = Dimensions.get("window");
+
 const PublicScreen = ({ route }) => {
-  /* ⭐ email from navigation */
+  const insets = useSafeAreaInsets();
   const initialEmail = route?.params?.email || "";
 
   const [email, setEmail] = useState(initialEmail);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
 
-  /* ⭐ AUTO FETCH when screen opens with email */
   useEffect(() => {
     if (initialEmail) fetchProfile(initialEmail);
-  }, []);
+  }, [initialEmail]);
 
   const fetchProfile = async (targetEmail = email) => {
     if (!targetEmail) return;
-
     try {
       setLoading(true);
       const res = await getStudentPublicProfileApi(targetEmail);
@@ -42,120 +39,171 @@ const PublicScreen = ({ route }) => {
   const student = data?.student;
   const analytics = data?.analytics;
 
+  // Contact Actions
+  const makeCall = () => {
+    if (student?.contact_no) Linking.openURL(`tel:${student.contact_no}`);
+  };
+
+  const openWhatsApp = () => {
+    if (student?.contact_no) Linking.openURL(`whatsapp://send?phone=${student.contact_no}`);
+  };
+
   return (
-    <ScrollView
-      className="flex-1 bg-[#F5F1E6]"
-      contentContainerStyle={{ padding: 24 }}
-    >
-      {/* ⭐ SEARCH BAR */}
-      <View className="flex-row items-center bg-white rounded-2xl px-4 py-3 border border-[#E5E5E5]">
-        <Ionicons name="search" size={20} color="#777" />
-
-        <TextInput
-          placeholder="Enter student email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          className="flex-1 ml-2 text-[#1A1A1A]"
-        />
-
-        <TouchableOpacity onPress={() => fetchProfile()}>
-          <Ionicons name="arrow-forward-circle" size={26} color="#E2B35E" />
-        </TouchableOpacity>
-      </View>
-
-      {/* ⭐ LOADING */}
-      {loading && (
-        <View className="items-center mt-10">
-          <ActivityIndicator size="large" color="#E2B35E" />
-        </View>
-      )}
-
-      {/* ⭐ PROFILE UI */}
-      {!loading && student && (
-        <>
-          {/* TOP SCORE */}
-          <View className="bg-[#1A1A1A] rounded-3xl p-6 items-center mt-6">
-            <Text className="text-xs tracking-widest text-white uppercase">
-              Contribution Score
-            </Text>
-            <Text className="text-[#E2B35E] text-5xl font-black mt-2">
-              {analytics?.contribution?.score ?? "-"}
-            </Text>
-            <Text className="mt-2 text-xs text-white">
-              Overall Performance Index
-            </Text>
+    <View style={{ flex: 1, backgroundColor: "#F5F1E6" }}>
+      <StatusBar barStyle="dark-content" />
+      
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+        
+        {/* HEADER & SEARCH BAR */}
+        <View style={{ paddingTop: insets.top + 20 }} className="px-6 pb-8 bg-white rounded-b-[50px] shadow-sm">
+          <Text className="text-[#E2B35E] text-[10px] font-black uppercase tracking-[3px] mb-2 text-center">Scholar Verification</Text>
+          <View className="flex-row items-center bg-[#F5F1E6] rounded-3xl px-5 py-2 border border-[#E5E5E5]">
+            <Feather name="search" size={18} color="#A0A0A0" />
+            <TextInput
+              placeholder="Student email address..."
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              className="flex-1 ml-3 text-[#1A1A1A] font-bold text-sm h-10"
+            />
+            <TouchableOpacity onPress={() => fetchProfile()} className="bg-[#1A1A1A] w-10 h-10 rounded-2xl items-center justify-center shadow-lg">
+              <Ionicons name="arrow-forward" size={20} color="#E2B35E" />
+            </TouchableOpacity>
           </View>
+        </View>
 
-          {/* PROFILE HEADER */}
-          <View className="items-center mt-8">
-            <View className="items-center justify-center w-24 h-24 bg-white rounded-full shadow">
-              <Ionicons name="person" size={40} color="#E2B35E" />
+        {loading ? (
+          <View className="items-center mt-20">
+            <ActivityIndicator size="large" color="#E2B35E" />
+            <Text className="text-[#A0A0A0] text-[10px] font-black mt-4 uppercase tracking-widest">Compiling Data...</Text>
+          </View>
+        ) : student ? (
+          <View className="px-6 mt-6">
+            
+            {/* 1. CONTRIBUTION SCORE CARD */}
+            <View className="bg-[#1A1A1A] rounded-[45px] p-8 shadow-2xl relative overflow-hidden">
+                <View className="absolute -right-10 -top-10 w-40 h-40 bg-[#E2B35E] opacity-10 rounded-full" />
+                <View className="items-center">
+                    <Text className="text-white/40 text-[9px] font-black uppercase tracking-[3px]">Contribution Performance Index</Text>
+                    <View className="flex-row items-baseline mt-2">
+                        <Text className="text-6xl font-black text-white">{analytics?.contribution?.score ?? "0"}</Text>
+                        <Text className="text-[#E2B35E] text-xl font-bold ml-1">pts</Text>
+                    </View>
+   
+                </View>
             </View>
 
-            <Text className="text-xl font-black text-[#1A1A1A] mt-4">
-              {student?.name}
-            </Text>
+            {/* 2. FULL STUDENT IDENTITY CARD */}
+            <View className="bg-white rounded-[40px] p-8 mt-8 border border-[#E5E5E5] shadow-sm">
+                <View className="items-center">
+                    <View className="w-24 h-24 bg-[#F5F1E6] rounded-[35px] items-center justify-center border-4 border-white shadow-md">
+                        <FontAwesome5 name="user-check" size={35} color="#1A1A1A" />
+                    </View>
+                    <Text className="text-2xl font-black text-[#1A1A1A] mt-5 text-center">{student?.name}</Text>
+                    <Text className="text-[#E2B35E] font-bold text-xs uppercase tracking-widest mt-1">ID: {student?.roll_number || "N/A"}</Text>
+                </View>
 
-            <Text className="text-[#777]">
-              {student?.branch_name} • {student?.semester_name}
-            </Text>
-          </View>
+                {/* Info Detail Grid */}
+                <View className="flex-row flex-wrap justify-between mt-8">
+                    <DetailTile label="Branch" value={student?.branch_name} icon="git-branch" />
+                    <DetailTile label="Semester" value={student?.semester_name} icon="layers" />
+                    <DetailTile label="Section" value={student?.section_name} icon="grid" />
+                    <DetailTile label="Contact" value={student?.contact_no} icon="phone" />
+                </View>
 
-          {/* SNAPSHOT */}
-          <View className="flex-row justify-between mt-8">
-            <Card label="Projects" value={analytics?.projects?.total_projects} />
-            <Card label="Completed" value={analytics?.tasks?.completed} />
-            <Card
-              label="Attendance"
-              value={`${Math.round(
-                (analytics?.attendance?.attendance_rate || 0) * 100
-              )}%`}
-            />
-          </View>
+                {/* Communication Actions */}
+                <View className="flex-row items-center justify-between mt-8 pt-6 border-t border-[#F5F1E6]">
+                    <TouchableOpacity onPress={makeCall} className="flex-row items-center justify-center flex-1 h-14 bg-[#1A1A1A] rounded-2xl mr-2">
+                        <Feather name="phone-call" size={18} color="#E2B35E" />
+                        <Text className="text-white font-black ml-3 uppercase text-[10px] tracking-widest">Call Now</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={openWhatsApp} className="flex-row items-center justify-center flex-1 h-14 bg-[#25D36620] rounded-2xl ml-2 border border-[#25D36640]">
+                        <MaterialCommunityIcons name="whatsapp" size={20} color="#25D366" />
+                        <Text className="text-[#25D366] font-black ml-2 uppercase text-[10px] tracking-widest">Message</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
-          {/* TASK DETAILS */}
-          <View className="bg-white rounded-3xl p-6 mt-8 border border-[#E5E5E5]">
-            <SectionTitle title="Task Analytics" />
-            <Item label="Total Assigned" value={analytics?.tasks?.total_assigned} />
-            <Item label="Completed" value={analytics?.tasks?.completed} />
-            <Item label="In Progress" value={analytics?.tasks?.in_progress} />
-            <Item label="Overdue" value={analytics?.tasks?.overdue} />
-          </View>
+            {/* 3. CORE METRICS BREAKDOWN ($T_c, A_r, P_a, O_r$) */}
+            <View className="bg-white rounded-[40px] p-8 mt-6 border border-[#E5E5E5] shadow-sm">
+                <View className="flex-row items-center mb-8">
+                    <MaterialCommunityIcons name="chart-box-outline" size={22} color="#E2B35E" />
+                    <Text className="ml-3 font-black text-lg text-[#1A1A1A]">Formula Metrics</Text>
+                </View>
+                
+                <View className="flex-row flex-wrap justify-between">
+                    <StatBox label="Project Exp" value={analytics?.projects?.total_projects} sub="Count" />
+                    <StatBox label="Task Completion" value={analytics?.contribution_explained?.Tc} sub="Tc" />
+                    <StatBox label="Attendance" value={analytics?.contribution_explained?.Ar} sub="Ar" />
+                    <StatBox label="Activity Pa" value={analytics?.contribution_explained?.Pa} sub="Pa" />
+                    <StatBox label="Overdue Or" value={analytics?.contribution_explained?.Or} sub="Or" isNeg />
+                    <StatBox label="Total Meet" value={analytics?.attendance?.total_meetings} sub="Count" />
+                </View>
+            </View>
 
-          {/* ATTENDANCE */}
-          <View className="bg-white rounded-3xl p-6 mt-6 border border-[#E5E5E5]">
-            <SectionTitle title="Meeting Attendance" />
-            <Item label="Total Meetings" value={analytics?.attendance?.total_meetings} />
-            <Item label="Attended" value={analytics?.attendance?.attended} />
-            <Item label="Missed" value={analytics?.attendance?.missed} />
+            {/* 4. TASK & ATTENDANCE STATUS COUNTERS */}
+            <View className="bg-[#1A1A1A] rounded-[40px] p-8 mt-6">
+                <Text className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mb-6 text-center">Status Counters</Text>
+                <View className="flex-row justify-between mb-8">
+                    <CounterItem label="COMPLETED" value={analytics?.tasks?.completed} color="#4ADE80" />
+                    <CounterItem label="ONGOING" value={analytics?.tasks?.in_progress} color="#E2B35E" />
+                    <CounterItem label="OVERDUE" value={analytics?.tasks?.overdue} color="#F87171" />
+                </View>
+                <View className="flex-row justify-around pt-6 border-t border-white/5">
+                    <View className="items-center">
+                        <Text className="text-lg font-black text-white">{analytics?.attendance?.attended}</Text>
+                        <Text className="text-white/40 text-[7px] font-bold uppercase tracking-widest">Attended</Text>
+                    </View>
+                    <View className="items-center">
+                        <Text className="text-lg font-black text-white">{analytics?.attendance?.missed}</Text>
+                        <Text className="text-red-400 text-[7px] font-bold uppercase tracking-widest">Absent</Text>
+                    </View>
+                </View>
+            </View>
+
           </View>
-        </>
-      )}
-    </ScrollView>
+        ) : (
+          <View className="items-center px-10 mt-20">
+              <MaterialCommunityIcons name="account-search-outline" size={60} color="#D1D1D1" />
+              <Text className="text-[#A0A0A0] text-center font-bold text-[11px] mt-4 uppercase tracking-[2px]">Enter a scholar email to verify their project contributions.</Text>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
+/* --- REUSABLE COMPONENTS --- */
+
+const DetailTile = ({ label, value, icon }) => (
+    <View className="w-[48%] flex-row items-center mb-6">
+        <View className="w-9 h-9 rounded-xl bg-[#F5F1E6] items-center justify-center">
+            <Feather name={icon} size={14} color="#E2B35E" />
+        </View>
+        <View className="flex-1 ml-3">
+            <Text className="text-[7px] font-bold text-gray-400 uppercase tracking-widest">{label}</Text>
+            <Text className="text-[11px] font-black text-[#1A1A1A]" numberOfLines={1}>{value || "N/A"}</Text>
+        </View>
+    </View>
+);
+
+const StatBox = ({ label, value, sub, isNeg }) => (
+    <View className="w-[48%] bg-[#F5F1E6] p-4 rounded-[25px] mb-3">
+        <Text className="text-[8px] font-bold text-gray-400 uppercase mb-1">{label}</Text>
+        <View className="flex-row items-baseline">
+            <Text className={`text-xl font-black ${isNeg && value > 0 ? 'text-red-500' : 'text-[#1A1A1A]'}`}>
+                {value}
+            </Text>
+            <Text className="text-[8px] font-bold text-gray-400 ml-1 uppercase">{sub}</Text>
+        </View>
+    </View>
+);
+
+const CounterItem = ({ label, value, color }) => (
+    <View className="items-center">
+        <Text style={{ color }} className="text-3xl font-black">{value}</Text>
+        <Text className="text-white/40 text-[8px] font-bold uppercase tracking-widest mt-1">{label}</Text>
+    </View>
+);
+
 export default PublicScreen;
-
-/* small components */
-
-const Card = ({ label, value }) => (
-  <View className="bg-white rounded-2xl p-4 items-center w-[30%] border border-[#E5E5E5]">
-    <Text className="text-[#777] text-xs">{label}</Text>
-    <Text className="text-lg font-black text-[#1A1A1A] mt-1">
-      {value ?? "-"}
-    </Text>
-  </View>
-);
-
-const SectionTitle = ({ title }) => (
-  <Text className="font-black text-[#1A1A1A] mb-4">{title}</Text>
-);
-
-const Item = ({ label, value }) => (
-  <View className="mb-3">
-    <Text className="text-[#777] text-xs">{label}</Text>
-    <Text className="font-bold text-[#1A1A1A]">{value ?? "-"}</Text>
-  </View>
-);

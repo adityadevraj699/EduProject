@@ -12,8 +12,8 @@ import ProfileScreen from "../screens/guide/profile/ProfileScreen";
 
 // --- STUDENT SCREENS (Inhe create kar lena agar nahi kiye hain) ---
 import StudentHomeScreen from "../screens/student/home/HomeScreen";
-import StudentProjectScreen from "../screens/student/project/ProjectListScreen";
-import StudentMeetingScreen from "../screens/student/meeting/MeetingScreen";
+import StudentProjectStack from "./student/team/TeamStack";
+import StudentMeetingStack from "./student/meeting/MeetingStack";
 import StudentProfileStack from "./student/profile/StudentProfileStack";
 
 const Tab = createBottomTabNavigator();
@@ -64,8 +64,8 @@ export default function MainTabs() {
       ) : (
         <>
           <Tab.Screen name="Home" component={StudentHomeScreen} />
-          <Tab.Screen name="Project" component={StudentProjectScreen} />
-          <Tab.Screen name="Meeting" component={StudentMeetingScreen} />
+          <Tab.Screen name="Project" component={StudentProjectStack} />
+          <Tab.Screen name="Meeting" component={StudentMeetingStack} />
           <Tab.Screen name="Profile" component={StudentProfileStack} />
         </>
       )}
