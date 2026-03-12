@@ -122,6 +122,42 @@ export default function TeamListScreen({ navigation }) {
           </TouchableOpacity>
         )}
       />
+
+
+      {/* ⭐ 3. FIXED FLOATING ACTION BUTTON (ScrollView/FlatList ke BAHAR) */}
+      <TouchableOpacity 
+        activeOpacity={0.8}
+       // HomeScreen.js mein FAB button ka onPress
+onPress={() => navigation.navigate("Team", { 
+    screen: "CreateTeam",
+    initial: false // 👈 Ye ensure karega ki ye 'extra' screen hai stack mein
+})} // Tab Navigator ke andar hai toh direct name se navigate ho jayega
+        style={{
+          position: 'absolute',
+          right: 24,
+          bottom: insets.bottom + 20, 
+          width: 65,
+          height: 65,
+          borderRadius: 22,
+          backgroundColor: '#1A1A1A',
+          alignItems: 'center',
+          justifyContent: 'center',
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          borderWidth: 2,
+          borderColor: '#E2B35E'
+        }}
+      >
+        <View className="items-center justify-center">
+          <Ionicons name="add" size={30} color="#E2B35E" />
+          <Text style={{ color: '#E2B35E', fontSize: 8, fontBold: '900', marginTop: -3, textTransform: 'uppercase' }}>
+            New Squad
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }

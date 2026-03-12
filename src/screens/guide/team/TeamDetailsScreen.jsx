@@ -118,11 +118,15 @@ export default function TeamDetailsScreen({ route, navigation }) {
           <Text className="text-[#6B6B6B] text-sm leading-6 mb-5">{data?.project_details?.description}</Text>
           
           <View className="flex-row flex-wrap mb-6">
-            {data?.project_details?.technologies?.split(',').map((tech, index) => (
-              <View key={index} className="bg-[#1A1A1A] px-3 py-1.5 rounded-lg mr-2 mb-2">
-                <Text className="text-white text-[10px] font-bold">{tech.trim()}</Text>
-              </View>
-            ))}
+          {data?.project_details?.technologies ? (
+  data.project_details.technologies.split(',').map((tech, index) => (
+    <View key={index} className="bg-[#1A1A1A] px-3 py-1.5 rounded-lg mr-2 mb-2">
+      <Text className="text-white text-[10px] font-bold">{tech.trim()}</Text>
+    </View>
+  ))
+) : (
+  <Text className="text-xs italic text-gray-400">No technologies listed</Text>
+)}
           </View>
 
           <View className="flex-row justify-between border-t border-[#F5F1E6] pt-5">
@@ -171,7 +175,7 @@ export default function TeamDetailsScreen({ route, navigation }) {
               </View>
               <Text className="text-[#6B6B6B] text-[10px]">{member.roll_number} • {member.branch_name}</Text>
             </View>
-           <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row" }}>
   
   {/* CALL */}
   <TouchableOpacity
@@ -201,4 +205,13 @@ export default function TeamDetailsScreen({ route, navigation }) {
       </ScrollView>
     </View>
   );
+
+
+
 }
+
+
+
+
+
+

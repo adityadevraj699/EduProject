@@ -47,7 +47,6 @@ export const getMeetingDetailsApi = async (token, meetingId) => {
 
     return result; // Isme success aur data dono honge
   } catch (err) {
-    console.error("Fetch Meeting Details Error:", err.message);
     throw err;
   }
 };

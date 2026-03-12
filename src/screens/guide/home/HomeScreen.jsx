@@ -9,6 +9,7 @@ import { Ionicons, MaterialCommunityIcons, FontAwesome5, Feather } from "@expo/v
 
 import { useAuth } from "../../../context/AuthContext";
 import { getGuideDashboardApi } from "../../../services/homeApi";
+import { CommonActions } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -129,6 +130,8 @@ export default function HomeScreen() {
             <MetricCard label="Meetings" value={data?.stats?.meetings} icon="video" />
         </ScrollView>
 
+
+
         {/* UPCOMING SECTION - SLIDER */}
         <View className="mt-10">
             <View className="flex-row items-center justify-between px-6 mb-5">
@@ -212,6 +215,49 @@ export default function HomeScreen() {
         </View>
 
       </ScrollView>
+
+
+{/* ⭐ 3. FIXED FLOATING ACTION BUTTON (Yahan ScrollView ke BAHAR rakhein) */}
+      <TouchableOpacity 
+        activeOpacity={0.8}
+        // HomeScreen.js mein FAB button ka onPress
+// FAB Button onPress:
+onPress={() => {
+  navigation.dispatch(
+    CommonActions.navigate({
+      name: 'Team', // Tab ka naam
+      params: {
+        screen: 'CreateTeam', // Stack ki screen
+      },
+    })
+  );
+}}
+        style={{
+          position: 'absolute',
+          right: 24,
+          bottom: insets.bottom + 20, // Mobile ke bottom area se safe distance
+          width: 65,
+          height: 65,
+          borderRadius: 22,
+          backgroundColor: '#1A1A1A',
+          alignItems: 'center',
+          justifyContent: 'center',
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          borderWidth: 2,
+          borderColor: '#E2B35E' // Royal Gold Border
+        }}
+      >
+        <View className="items-center justify-center">
+          <Ionicons name="add" size={30} color="#E2B35E" />
+          <Text style={{ color: '#E2B35E', fontSize: 8, fontWeight: '900', marginTop: -3, textTransform: 'uppercase' }}>
+            Team
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }

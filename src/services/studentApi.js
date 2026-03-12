@@ -36,7 +36,6 @@ export const getStudentTeamsApi = async (token) => {
 
     return await handleResponse(res);
   } catch (err) {
-    console.error("Student Teams Error:", err.message);
     throw err;
   }
 };
@@ -60,7 +59,6 @@ export const getStudentTeamDetailsApi = async (token, teamId) => {
 
     return await handleResponse(res);
   } catch (err) {
-    console.error("Student Team Detail Error:", err.message);
     throw err;
   }
 };
@@ -81,7 +79,7 @@ export const getStudentMeetingsApi = async (token) => {
 
     return await handleResponse(res);
   } catch (err) {
-    console.error("Student Meetings Error:", err.message);
+ 
     throw err;
   }
 };
@@ -105,7 +103,6 @@ export const getStudentMeetingDetailsApi = async (token, meetingId) => {
 
     return await handleResponse(res);
   } catch (err) {
-    console.error("Student Meeting Detail Error:", err.message);
     throw err;
   }
 };

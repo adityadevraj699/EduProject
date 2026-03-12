@@ -19,7 +19,6 @@ export const getMyProfileApi = async (token) => {
       throw new Error("Server returned invalid response");
     }
 
-    console.info("profile data:", data);
 
     if (!res.ok) {
       throw new Error(data.message || "Failed to fetch profile");
@@ -28,7 +27,6 @@ export const getMyProfileApi = async (token) => {
     return data;
 
   } catch (err) {
-    console.log("Profile API error:", err.message);
     throw err;
   }
 };

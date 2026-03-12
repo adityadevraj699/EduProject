@@ -30,7 +30,7 @@ export const getStudentPublicProfileApi = async (email) => {
     return data;
 
   } catch (err) {
-    console.log("Public profile API error:", err.message);
+
     throw err;
   }
 };
