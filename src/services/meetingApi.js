@@ -73,6 +73,7 @@ export const getMeetingAndMembersApi = async (token, meetingId) => {
 
 export const createMomApi = async (token, meetingId, payload) => {
   try {
+    console.log(payload);
     // Sahi Route: /meetings/:meetingId/mom
     const url = `${BASE_URL}/meetings/${meetingId}/mom`;
     

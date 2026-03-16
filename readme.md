@@ -40,7 +40,3 @@ EduProject/
 │
 └── assets/
 eas build -p android --profile preview
-
-
-
-
