@@ -160,10 +160,65 @@ export default function CreateTeamScreen({ navigation }) {
                  {index > 0 && <TouchableOpacity onPress={() => removeMember(index)}><Feather name="x" size={18} color="red" /></TouchableOpacity>}
               </View>
 
-              <TextInput placeholder="Full Name" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.name} onChangeText={v => updateMember(index, 'name', v)} />
-              <TextInput placeholder="Email" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.email} onChangeText={v => updateMember(index, 'email', v)} />
-              <TextInput placeholder="Roll Number" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.rollNumber} onChangeText={v => updateMember(index, 'rollNumber', v)} />
+              <TextInput placeholder="Full Name"  placeholderTextColor="#000" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.name} onChangeText={v => updateMember(index, 'name', v)} />
+              <TextInput placeholder="Email"  placeholderTextColor="#000" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.email} onChangeText={v => updateMember(index, 'email', v)} />
+              <TextInput placeholder="Roll Number"  placeholderTextColor="#000" className="bg-[#F8F9FB] p-4 rounded-2xl mb-3 font-bold" value={member.rollNumber} onChangeText={v => updateMember(index, 'rollNumber', v)} />
+               <Dropdown
+  style={styles.dropdown}
+  data={[
+    // 👑 Leadership
+    { label: 'Team Leader', value: 'TEAM_LEADER' },
+    { label: 'Project Manager', value: 'PROJECT_MANAGER' },
+    { label: 'Product Manager', value: 'PRODUCT_MANAGER' },
 
+    // 💻 Development
+    { label: 'Frontend Developer', value: 'FRONTEND_DEV' },
+    { label: 'Backend Developer', value: 'BACKEND_DEV' },
+    { label: 'Full Stack Developer', value: 'FULLSTACK_DEV' },
+    { label: 'Mobile App Developer', value: 'MOBILE_DEV' },
+
+    // 🎨 Design
+    { label: 'UI/UX Designer', value: 'UI_UX' },
+
+    // 🧪 Testing
+    { label: 'QA / Tester', value: 'TESTER' },
+
+    // ⚙️ Infra & Data
+    { label: 'DevOps Engineer', value: 'DEVOPS' },
+    { label: 'Database Engineer', value: 'DB_ENGINEER' },
+    { label: 'Cloud Engineer', value: 'CLOUD' },
+
+    // 🤖 Advanced Tech
+    { label: 'AI / ML Engineer', value: 'AI_ML' },
+    { label: 'Cyber Security Analyst', value: 'SECURITY' },
+
+    // 🎓 Education Specific
+    { label: 'Researcher', value: 'RESEARCHER' },
+    { label: 'Documentation Lead', value: 'DOCUMENTATION' },
+    { label: 'Presentation Lead', value: 'PRESENTATION' },
+    { label: 'Business Analyst', value: 'BUSINESS_ANALYST' },
+
+    // 👨‍🎓 Generic
+    { label: 'Team Member', value: 'MEMBER' }
+  ]}
+  labelField="label"
+  valueField="value"
+  placeholder="Select Role"
+  placeholderStyle={{ color: '#555', fontWeight: 'bold' }}
+  selectedTextStyle={{ color: '#1A1A1A', fontWeight: 'bold' }}
+  value={member.role}
+  onChange={item => {
+    // 👉 Role update
+    updateMember(index, 'role', item.value);
+
+    // 👉 Auto leader logic
+    if (item.value === 'TEAM_LEADER') {
+      updateMember(index, 'isLeader', true);
+    } else {
+      updateMember(index, 'isLeader', false);
+    }
+  }}
+/>
               <View className="flex-row justify-between mb-3">
                 <Dropdown style={styles.miniDropdown} data={metadata.branches} labelField="label" valueField="value" placeholder="Branch" value={member.branchId} onChange={i => updateMember(index, 'branchId', i.value)} />
                 <Dropdown style={styles.miniDropdown} data={metadata.semesters} labelField="label" valueField="value" placeholder="Sem" value={member.semesterId} onChange={i => updateMember(index, 'semesterId', i.value)} />
